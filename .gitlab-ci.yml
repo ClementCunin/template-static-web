@@ -9,5 +9,5 @@ deploy:
     - wget ${TERRAFORM_URL} -O terraform.zip
     - unzip terraform.zip
   script:
-    - ./terraform remote config -backend=S3 -backend-config="bucket=ccunin-terraform-state" -backend-config="key=api.tfstate" -backend-config="region=eu-central-1"
-    - ./terraform apply src/terraform
+    - ./terraform remote config ${TERRAFORM_STATE}
+    - ./terraform apply src/terraform -var url=${URL}

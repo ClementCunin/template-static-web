@@ -1,9 +1,12 @@
+variable "region" { default = "eu-central-1" }
+variable "url" {}
+
 provider "aws" {
-	region = "eu-central-1"
+	region = "${var.region}"
 }
 
 resource "aws_s3_bucket" "site" {
-    bucket = "my-site.d2-si.eu"
+    bucket = "${var.url}"
     acl = "public-read"
 
     website {
