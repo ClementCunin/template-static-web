@@ -1,0 +1,13 @@
+variables:
+  TERRAFORM_VERSION: 0.8.6
+  TERRAFORM_URL: https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+  
+deploy:
+  image: alpine:latest
+  before_script:
+    - apk add --update ca-certificates openssl
+    - wget ${TERRAFORM_URL} -O terraform.zip
+    - unzip terraform.zip
+  script:
+    - ./terraform remote config -backend=S3 -backend-config="bucket=ccunin-terraform-state" -backend-config="key=api.tfstate" -backend-config="region=eu-central-1"
+    - ./terraform apply src/terraform
