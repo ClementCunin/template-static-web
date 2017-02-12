@@ -1,8 +1,13 @@
 variables:
   TERRAFORM_VERSION: 0.8.6
   TERRAFORM_URL: https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+
+stages:
+  - terraform
+  - upload
   
-deploy:
+terraform:
+  stage: terraform
   image: alpine:latest
   before_script:
     - apk add --update ca-certificates openssl
@@ -11,3 +16,9 @@ deploy:
   script:
     - ./terraform remote config ${TERRAFORM_STATE}
     - ./terraform apply src/terraform -var url=${URL}
+    
+upload:
+  stage: upload
+  image: cgswong/aws
+  script:
+    - aws s3 sync src/web s3://${URL}/ --acl public-read
