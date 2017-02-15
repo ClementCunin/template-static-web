@@ -1,0 +1,21 @@
+env:
+  global:
+    - TERRAFORM_VERSION=0.8.6
+    - TERRAFORM_URL=https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+
+script: echo "Nothing to build, juste deploy!" && true
+
+# install terraform
+before_deploy:
+  - curl -fSL ${TERRAFORM_URL} -o terraform.zip
+  - sudo unzip terraform.zip -d /opt/terraform
+  - sudo ln -s /opt/terraform/terraform /usr/bin/terraform
+  - rm -f terraform.zip
+
+# terraform apply
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: 
+      terraform remote config ${TERRAFORM_STATE} && 
+      terraform apply src/terraform -var url=${URL}
